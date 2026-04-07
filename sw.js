@@ -1,10 +1,11 @@
-const CACHE_NAME = 'snail-tracker-v4';
+const CACHE_NAME = 'snail-tracker-v5';
 const ASSETS = [
   './index.html',
   './manifest.json',
   './styles.css',
   './data1.js',
-  './data2.js',
+  './data2a.js',
+  './data2b.js',
   './data3.js',
   './data4.js',
   './app.js'

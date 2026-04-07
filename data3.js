@@ -83,8 +83,8 @@ const DATA_PART3 = [
         id: "frame-data",
         name: "Create frame data spreadsheet",
         effort: "M",
-        desc: "Document every move for every character: startup frames, active frames, recovery frames, damage, knockback, hitstun. This is your balance bible.",
-        tips: "Use Google Sheets. Columns: Character, Move Name, Startup, Active, Recovery, Damage, Knockback Angle, Knockback Force. Fill it in as you build moves.",
+        desc: "Document every move for every character: dash startup, dash active frames, dash recovery, dash range, dash knockback, shell toss speed, shell toss recovery, parry window. With only dash, shell toss, and parry per character, this spreadsheet stays manageable.",
+        tips: "Use Google Sheets. Columns: Character, Dash Startup, Dash Active, Dash Recovery, Dash Range, Dash Knockback, Shell Toss Speed, Shell Toss Arc, Parry Window. Since every hit does 1 HP damage, balance is about frame advantage and knockback.",
         resources: [
           "Frame data explained — search 'fighting game frame data explained' on YouTube"
         ]
@@ -128,7 +128,7 @@ const DATA_PART3 = [
         id: "feedback",
         name: "Collect and analyze player feedback",
         effort: "M",
-        desc: "Create a feedback form (Google Forms works). Ask: favorite character, least favorite, which moves feel unfair, which arenas are fun/not fun, overall fun rating 1-10.",
+        desc: "Create a feedback form (Google Forms works). Ask: favorite character, least favorite, does parry feel fair, is screen wrapping intuitive, is shell toss risk/reward balanced, which arenas are fun, overall fun rating 1-10.",
         tips: "Ask specific questions, not just 'what do you think?' People give better feedback with structure.",
         resources: []
       },
@@ -223,8 +223,8 @@ const DATA_PART3 = [
         id: "flash-effects",
         name: "Add visual flash on counters/parries",
         effort: "S",
-        desc: "White flash on perfect blocks, yellow flash on counters. Brief full-screen flash on ultimate activation. These visual cues communicate gameplay and look cool.",
-        tips: "Use a white ColorRect over the screen with an AnimationPlayer to flash it. Or use a shader on the character sprite for per-character flashes.",
+        desc: "Bright flash on successful parry — this is THE signature visual moment of your game. Different color for parrying a dash vs parrying a shell toss. Brief full-screen white flash on the final KO of a match.",
+        tips: "Use a white ColorRect over the screen with an AnimationPlayer. For the parry flash, also flash the parrying character's sprite white for 2-3 frames using a shader. The parry flash + hitstop combo is what makes parries feel incredible.",
         resources: []
       },
       {
@@ -276,8 +276,8 @@ const DATA_PART3 = [
         id: "achievements",
         name: "Implement Steam achievements",
         effort: "M",
-        desc: "Plan 15-30 achievements: complete arcade mode, win with each character, pull off specific moves, play X matches. Achievements drive engagement and completionism.",
-        tips: "Mix easy achievements (win your first match) with hard ones (win 100 online matches). Use GodotSteam addon for Steamworks integration.",
+        desc: "Plan 15-30 achievements: complete arcade mode, win with each character, land X parries, KO someone with a screen-wrapped shell toss, win a match at 1 HP. Achievements drive engagement.",
+        tips: "Mix easy ones (win first match, land first parry) with hard ones (win without taking damage, KO with a reflected shell). Use GodotSteam addon.",
         resources: [
           "GodotSteam — <a href='https://godotsteam.com'>godotsteam.com</a>",
           "GodotSteam achievement guide — <a href='https://godotsteam.com/tutorials/achievements/'>godotsteam.com</a>"
@@ -320,7 +320,7 @@ const DATA_PART3 = [
         name: "Set up Steam Input API for controllers",
         effort: "M",
         desc: "Steam Input lets players customize controls for ANY controller (Xbox, PS, Switch Pro, Steam Deck). Configure default bindings and action sets.",
-        tips: "This is how your game works on Steam Deck. Define your actions (attack, jump, block, special) and let Steam Input handle the rest.",
+        tips: "This is how your game works on Steam Deck. Define your actions (roll, dash, shell toss, parry) and let Steam Input handle the rest.",
         resources: [
           "Steam Input docs — <a href='https://partner.steamgames.com/doc/features/steam_controller'>partner.steamgames.com</a>"
         ]

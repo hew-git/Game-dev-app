@@ -1,5 +1,5 @@
 // Combine all data parts
-const CATEGORIES = [...DATA_PART1, ...DATA_PART2, ...DATA_PART3, ...DATA_PART4];
+const CATEGORIES = [...DATA_PART1, ...DATA_PART2A, ...DATA_PART2B, ...DATA_PART3, ...DATA_PART4];
 
 // State management
 const STORAGE_KEY = 'snail-tracker-v1';

@@ -4,8 +4,8 @@
   "description": "Game dev tracker for a snail physics brawler targeting Steam",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f1410",
-  "theme_color": "#2d5a27",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "any",
   "icons": [
     {
