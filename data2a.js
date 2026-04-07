@@ -23,9 +23,9 @@ const DATA_PART2A = [
         id: "modular-sprites",
         name: "Build modular snail sprites (body + shell separate)",
         effort: "L",
-        desc: "Your snails MUST be split into separate pieces: the body/neck and the shell. This is essential because: (1) the body extends out during dashes, (2) the shell detaches during shell toss, (3) the shell rotates independently during rolling. In Godot, make the shell a child Sprite2D of the body node, so they can move independently.",
-        tips: "Think of it as a paper doll system. The body is one sprite, the shell is another sprite layered on top. During a dash, the body stretches away from the shell. During shell toss, the shell becomes a separate projectile. This solves your rolling pixelation concern — the shell rotates smoothly as a separate round sprite.",
-        beginner: "This modular approach is actually EASIER than drawing full character sprites. You draw fewer total frames because the pieces animate independently.",
+        desc: "Your snail is two pieces: a circle (shell) and a line (body/neck). These MUST be separate sprites because: (1) during normal movement, the body rotates around the shell as a unit — like a clock hand spinning, (2) during dash, the body hides inside the shell and only the shell is visible, (3) during shell toss, the shell flies away and only the body remains. In Godot, make the body a child of the shell node and rotate the whole thing together.",
+        tips: "The body sprite is essentially a 'stick' that extends from the shell's edge. It rotates WITH the shell during movement (the whole node rotates). For dash: just hide the body sprite and launch the shell. For shell toss: detach the shell as a projectile, leaving the body exposed. Three visual states from two sprites.",
+        beginner: "This is actually simpler than a traditional character sprite. You're drawing a circle and a stick. The complexity is in the rotation and state changes, not the art.",
         resources: [
           "Godot Sprite2D + child nodes — <a href='https://docs.godotengine.org/en/stable/classes/class_sprite2d.html'>docs.godotengine.org</a>",
           "Search 'modular character sprites pixel art' on YouTube"
@@ -33,31 +33,31 @@ const DATA_PART2A = [
       },
       {
         id: "rolling-art",
-        name: "Solve rolling animation for pixel art",
+        name: "Solve rotation for pixel art (shell + body)",
         effort: "L",
-        desc: "Rolling is tricky in pixel art because rotation causes ugly aliasing. Solutions: (1) Pre-render 8-16 rotation frames for the shell at fixed angles — no runtime rotation, just frame-swap. (2) Make the shell nearly circular/symmetrical so rotation artifacts are minimal. (3) Use Godot's CanvasItem rotation on a clean circular shell sprite — at low res, round shapes rotate well. (4) Use a shader to rotate the shell texture with nearest-neighbor sampling.",
-        tips: "The pre-rendered rotation approach (8 frames at 45-degree increments) is tried and tested — it's how classic games handled rotation. Draw the shell facing right, then rotate in Aseprite and clean up each frame. Your body/neck piece doesn't rotate with the shell, so it only needs directional facing sprites.",
-        beginner: "Start with option 2: make the shell very round and symmetrical. A perfectly circular shell actually rotates fine in pixel art because there are no asymmetric details to alias. Add small details (cracks, patterns) AFTER you confirm the rotation looks good.",
+        desc: "Since the whole snail (shell + body) rotates continuously, you need smooth pixel art rotation. Your best options: (1) Pre-render 12-16 rotation frames of the ENTIRE snail (shell + body together) at fixed angles — swap frames based on rotation angle, no runtime rotation. (2) Keep the shell symmetrical/circular so it looks fine at any angle, and only pre-render 8 frames for the body 'stick' at different angles. (3) Rotate the whole node in Godot and rely on the circular shell looking clean — the body/stick is thin enough that rotation aliasing is minimal.",
+        tips: "Option 2 is your best bet: a round symmetrical shell has no aliasing issues when rotated. The body is a thin line/stick, which also rotates cleanly because there's not much pixel detail to distort. Draw the shell once (it's a circle — it always looks the same). Draw the body in 8 directions (up, up-right, right, down-right, down, down-left, left, up-left) and snap to the nearest frame based on rotation angle.",
+        beginner: "Test this early! Draw a simple circle and a stick in Aseprite. Import into Godot, rotate the node, and see how it looks. If it's clean enough, you might not need pre-rendered frames at all — Godot's rotation on simple circular shapes often looks fine. If it's ugly, go with the 8-direction frame approach.",
         resources: [
           "Pre-rendered rotation tutorial — search 'pixel art rotation frames Aseprite' on YouTube",
           "Saint11 pixel art tips — <a href='https://saint11.org/blog/pixel-art-tutorials/'>saint11.org</a>"
         ]
       },
       {
-        id: "body-stretch",
-        name: "Animate body extension/dash sprites",
+        id: "state-visuals",
+        name: "Create visuals for each snail state",
         effort: "M",
-        desc: "When dashing, the snail's body/neck extends out. Options: (1) Draw 3-4 frames of increasing extension length. (2) Use a stretchable middle segment — draw a head, a 1-pixel-tall repeating neck segment, and tile it to any length. (3) Use Godot's Sprite2D scale on a neck segment. The tileable neck approach is most flexible.",
-        tips: "The 'head + tileable neck + shell' approach means you draw very few frames but get smooth extension at any length. The head has a few directional sprites (up, down, left, right). The neck is a tiny 1-tile segment that repeats. The shell stays behind.",
+        desc: "Your snail has distinct visual states: (1) MOVING — shell circle with body-stick extending out, whole thing rotating. (2) DASHING — just the shell circle, body hidden inside, maybe motion lines or a trail effect. (3) SHELL-LESS — just the body/slug, no shell, looks vulnerable and squishy. (4) PARRYING — brief flash pose. (5) HIT — squash/flash. (6) KO — shell crack + splat.",
+        tips: "The dash state (shell only) is the simplest to draw — it's literally just your shell sprite rolling fast. Add a speed trail or blur lines behind it for readability. The shell-less state (after shell toss) should look clearly vulnerable — the naked slug body wobbling around.",
         resources: [
-          "Godot NinePatchRect for stretchable sprites — <a href='https://docs.godotengine.org/en/stable/classes/class_ninepatchrect.html'>docs.godotengine.org</a>"
+          "Godot AnimationPlayer for state transitions — <a href='https://docs.godotengine.org/en/stable/classes/class_animationplayer.html'>docs.godotengine.org</a>"
         ]
       },
       {
         id: "char-anims",
         name: "Create per-character animation sets",
         effort: "L",
-        desc: "Each snail needs: idle (2-3 frames), rolling (shell rotation frames), dash wind-up (2 frames), dash extend (head + neck), dash recovery (2 frames), shell toss (2-3 frames), shell-less vulnerable state (2 frames), parry pose (1-2 frames), hit/hurt (2 frames), KO (3-4 frames). ~20-25 frames per character.",
+        desc: "Each snail needs: body sprite (8 directional frames for rotation, or a single sprite if Godot rotation looks clean), shell sprite (1 frame if symmetrical), dash trail effect, shell-less slug body (2-3 frames wobbling), shell toss launch (2 frames), parry flash (1-2 frames), hit reaction (2 frames), KO animation (3-4 frames). Since the shell is just a circle and the body is a stick, total unique art per character is actually quite low — ~15-20 frames.",
         tips: "Build the full animation set for ONE character first. Learn the pipeline. Character 2 onward will go 3x faster because you know what you're doing.",
         beginner: "Use Aseprite's animation timeline. Tag each animation (idle, roll, dash, etc.). Export as a spritesheet and import into Godot's AnimatedSprite2D or AnimationPlayer.",
         resources: [

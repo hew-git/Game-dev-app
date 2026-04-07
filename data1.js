@@ -151,11 +151,11 @@ const DATA_PART1 = [
     tasks: [
       {
         id: "rolling",
-        name: "Implement snail rolling movement",
+        name: "Implement snail rolling / body-push movement",
         effort: "L",
-        desc: "The primary movement: snails roll around the screen. Use CharacterBody2D or RigidBody2D. Rolling should feel weighty and momentum-based — snails accelerate and decelerate, slide a bit on turns. The shell should visually rotate as you roll.",
-        tips: "Use RigidBody2D if you want physics-driven rolling (more emergent, harder to control). Use CharacterBody2D with apply_force-like logic if you want tighter control. Either works — pick one and commit.",
-        beginner: "Start with a colored circle. Get rolling movement feeling good before adding any art. Program art is your friend.",
+        desc: "The snail moves by extending its body out of the shell and pushing off the ground — the whole thing (shell + body) rotates together like a circle with a line sticking out. Think of a clock hand spinning around, where the shell is the center and the body is the hand pushing off surfaces. This IS the movement — there's no separate walk/run.",
+        tips: "Visually, the player is a circle (shell) with a line (body) rotating around it. Use RigidBody2D for physics-driven rotation — apply torque to spin, and when the body contacts the ground, apply a push force. The rotation speed = movement speed. This will feel unique and goofy, which is exactly the vibe.",
+        beginner: "Start with a circle and a line in programmer art. Get the rotation + push-off feeling fun before any pixel art. Test: does spinning around feel satisfying? Does pushing off surfaces feel responsive? Nail this first — it's the foundation of the whole game.",
         resources: [
           "RigidBody2D — <a href='https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html'>docs.godotengine.org</a>",
           "CharacterBody2D — <a href='https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html'>docs.godotengine.org</a>"
@@ -171,12 +171,12 @@ const DATA_PART1 = [
         resources: []
       },
       {
-        id: "body-extend",
-        name: "Implement body/neck extension dash",
+        id: "dash",
+        name: "Implement dash (full retract into shell)",
         effort: "L",
-        desc: "The core attack: the snail extends its body/neck out of the shell in a straight line. This is both a movement tool (dash) and an attack (hitting someone with the extended body deals damage). Each character has a unique dash variation.",
-        tips: "The body extension is a two-part sprite system: the shell stays put (or trails behind), and the body/neck shoots forward. Use a tween or lerp for the extension. Add a brief wind-up animation for readability.",
-        beginner: "Start with a simple rectangle 'body' extending from a circle 'shell'. Get the mechanic working before worrying about art.",
+        desc: "When dashing, the snail fully retracts into its shell and launches as a pure rolling ball. No body visible — just the shell rocketing forward. This is an attack: hitting someone while dashing deals damage. Each character has a unique dash (different speed, trajectory, distance, etc.).",
+        tips: "The dash is a state change: hide the body sprite, apply a burst of velocity to the shell in the aimed direction. The shell becomes a hitbox during the dash. Add a brief wind-up (shell wobbles) for readability so opponents can react. Recovery = body re-emerges from shell.",
+        beginner: "Start simple: press dash button → body disappears → circle flies forward → body reappears. Get the state transitions right first, then tune speed/distance.",
         resources: [
           "Godot Tween — <a href='https://docs.godotengine.org/en/stable/classes/class_tween.html'>docs.godotengine.org</a>"
         ]
@@ -226,7 +226,7 @@ const DATA_PART1 = [
         id: "hitboxes",
         name: "Set up hitboxes & collision layers",
         effort: "M",
-        desc: "Collision layers: Layer 1 = arena/walls, Layer 2 = player bodies, Layer 3 = dashes (extending body hitbox), Layer 4 = shell toss projectiles, Layer 5 = parry zones. Document these in your GDD.",
+        desc: "Collision layers: Layer 1 = arena/walls, Layer 2 = player bodies (shell + body together), Layer 3 = dashing shells (retracted shell hitbox during dash), Layer 4 = tossed shells (shell projectile), Layer 5 = parry zones. Document these in your GDD.",
         tips: "Godot has 32 layers. Use them! Clear layer organization prevents 'why is my shell hitting myself' bugs. Label them in Project Settings.",
         resources: [
           "Collision layers — <a href='https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html#collision-layers-and-masks'>docs.godotengine.org</a>"
@@ -271,8 +271,8 @@ const DATA_PART1 = [
         id: "dash-variants",
         name: "Design unique dash for each character",
         effort: "L",
-        desc: "Each snail's body extension/dash should feel distinct. Ideas: straight long-range poke, short-range burst (more knockback), upward diagonal launcher, zigzag dash, multi-hit rapid jabs, ground-skimming low dash, delayed heavy dash.",
-        tips: "Vary three properties: range, speed, and angle/trajectory. A short fast dash and a long slow dash play completely differently even though they're the same basic mechanic.",
+        desc: "Each snail's dash (full retract + shell launch) should feel distinct. Ideas: straight rocket dash (fast, long range), heavy slam (short range, huge knockback), multi-bounce (ricochets off surfaces), spiral dash (curves in an arc), delayed bomb (pause then burst), phasing dash (passes through and hits from behind via screen wrap).",
+        tips: "Vary three properties: speed, trajectory, and distance. A short explosive dash and a long arcing dash play completely differently. Since the body is hidden during dash, the shell itself can look different per character (trail effects, spin speed).",
         resources: []
       },
       {
