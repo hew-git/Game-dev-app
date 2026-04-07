@@ -9,8 +9,8 @@ const DATA_PART2A = [
         id: "art-style",
         name: "Choose sprite resolution & color palette",
         effort: "M",
-        desc: "For a 2D fighting game with readable animations, 32x32 or 48x48 base character size works well. Pick a limited color palette (16-24 colors) for consistency. Larger sprites = more detail but exponentially more work per frame.",
-        tips: "32x32 is the sweet spot for your first pixel art game. Readable silhouettes matter more than detail. Use Lospec to browse curated palettes — pick one and stick with it.",
+        desc: "For your multi-part snail, think in terms of SHELL SIZE — the shell is the biggest single piece and your visual anchor. A 20-24px diameter shell means the head is 10-14px, the neck is 2-4px wide, and the full extended snail is ~40-50px tall. Pick a limited color palette (16-24 colors max) for consistency across all characters and arenas.",
+        tips: "24px shell diameter is the recommended starting point. At that size you get enough pixels for shell detail (spiral patterns, cracks) while keeping art manageable. Each character is differentiated mainly through head design, shell color/pattern, and undershell color. Use Lospec to browse curated palettes — pick one and stick with it.",
         beginner: "Don't aim for perfection. Games like Samurai Gunn use simple sprites and look amazing because the animations are snappy. Readability > detail.",
         resources: [
           "Lospec palettes — <a href='https://lospec.com/palette-list'>lospec.com</a>",
@@ -23,9 +23,9 @@ const DATA_PART2A = [
         id: "resolution-guide",
         name: "Understand sprite size vs screen resolution",
         effort: "S",
-        desc: "Your game has two separate concepts: GAME RESOLUTION (the viewport size in Godot) and SPRITE SIZE (how big your characters are in pixels). Game resolution is the canvas — common pixel art choices are 320x180, 384x216, 480x270, or 640x360. Sprite size is how many pixels your snail takes up on that canvas. These two numbers together determine how much of the screen your character fills and how many characters fit on screen at once.",
-        tips: "Example math: If your game resolution is 480x270 and your snail shell is 24x24 pixels, the shell is 1/20th of the screen width — a good size for a 2-player brawler. At 640x360 with a 32x32 shell, similar ratio. The key question: how many snails should fit across the screen? For a brawler, you want 8-12 character-widths across the screen so there's room to move. Work backward from that.",
-        beginner: "Start with 480x270 game resolution and 24-32px character sprites. This is a proven combo — your snails will be readable, arenas will have room, and the pixel art won't take forever to draw. You can always change these later, but it's painful, so test early. Set this in Godot: Project Settings > Display > Window > Viewport Width/Height.",
+        desc: "For a 2D brawler with a multi-part snail, think about size in terms of the SHELL — that's the core visual unit. At 480x270 game resolution, a 20-24px diameter shell gives you good screen coverage for 2-4 players. The full snail with head/neck extended will be roughly 40-50px tall, which is ~1/5 of screen height — readable and expressive. Sprite size and game resolution are locked together: pick one and the other follows.",
+        tips: "Recommended setup: 480x270 game resolution, 20-24px shell diameter, 10-14px head, 2-4px wide neck. The full extended snail is about 2x the shell height. At this size you can fit 4 snails on screen comfortably with room to fight. If you want more detail, go 640x360 with 28-32px shells.",
+        beginner: "Start with 480x270 and a 24px shell. This is proven for pixel art brawlers — readable characters, roomy arenas, and art that doesn't take forever. Set in Godot: Project Settings > Display > Window > Viewport Width = 480, Height = 270. Set Stretch Mode = 'viewport', Stretch Aspect = 'keep', Texture Filter = 'Nearest'.",
         resources: [
           "Common pixel art resolutions breakdown — search 'pixel art game resolution guide' on YouTube",
           "Godot viewport settings — <a href='https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html'>docs.godotengine.org</a>"
@@ -33,23 +33,23 @@ const DATA_PART2A = [
       },
       {
         id: "modular-sprites",
-        name: "Build modular snail sprites (body + shell separate)",
+        name: "Build 4-piece modular snail character",
         effort: "L",
-        desc: "Your snail is two pieces: a circle (shell) and a line (body/neck). These MUST be separate sprites because: (1) during normal movement, the body rotates around the shell as a unit — like a clock hand spinning, (2) during dash, the body hides inside the shell and only the shell is visible, (3) during shell toss, the shell flies away and only the body remains. In Godot, make the body a child of the shell node and rotate the whole thing together.",
-        tips: "The body sprite is essentially a 'stick' that extends from the shell's edge. It rotates WITH the shell during movement (the whole node rotates). For dash: just hide the body sprite and launch the shell. For shell toss: detach the shell as a projectile, leaving the body exposed. Three visual states from two sprites.",
-        beginner: "This is actually simpler than a traditional character sprite. You're drawing a circle and a stick. The complexity is in the rotation and state changes, not the art.",
+        desc: "Your snail is 4 separate sprites that combine into one character: (1) UNDERSHELL BODY — the round fleshy base that sits under the shell, always visible, this is the snail's 'foot'. (2) SHELL — sits on top of the undershell body, detaches during shell toss. (3) NECK — extends out from the undershell body, variable length, connects to the head. (4) HEAD — sits at the end of the neck, has the face/eyes/personality. During movement, the whole assembly rotates together. During dash, neck + head retract and only the shell + undershell remain. During shell toss, the shell flies off and undershell + neck + head remain.",
+        tips: "In Godot, structure this as a node tree: SnailRoot (Node2D, this rotates) → UndershellBody (Sprite2D, circle), Shell (Sprite2D, sits on top), Neck (Sprite2D or Line2D, extends outward), Head (Sprite2D, at neck tip). Rotate SnailRoot to spin the whole snail. Toggle visibility of parts for state changes: dash = hide neck + head; shell toss = reparent shell to a projectile node.",
+        beginner: "This 4-piece approach sounds complex but it's actually more manageable than drawing a full character sprite sheet. Each piece is small and simple. The head is where all the personality lives — give it expressive eyes and a mouth. Everything else is geometric shapes (circles, a line).",
         resources: [
           "Godot Sprite2D + child nodes — <a href='https://docs.godotengine.org/en/stable/classes/class_sprite2d.html'>docs.godotengine.org</a>",
-          "Search 'modular character sprites pixel art' on YouTube"
+          "Godot Node2D hierarchy — <a href='https://docs.godotengine.org/en/stable/tutorials/2d/2d_transforms.html'>docs.godotengine.org</a>"
         ]
       },
       {
         id: "rolling-art",
-        name: "Solve rotation for pixel art (shell + body)",
+        name: "Solve rotation for 4-piece snail in pixel art",
         effort: "L",
-        desc: "Since the whole snail (shell + body) rotates continuously, you need smooth pixel art rotation. Your best options: (1) Pre-render 12-16 rotation frames of the ENTIRE snail (shell + body together) at fixed angles — swap frames based on rotation angle, no runtime rotation. (2) Keep the shell symmetrical/circular so it looks fine at any angle, and only pre-render 8 frames for the body 'stick' at different angles. (3) Rotate the whole node in Godot and rely on the circular shell looking clean — the body/stick is thin enough that rotation aliasing is minimal.",
-        tips: "Option 2 is your best bet: a round symmetrical shell has no aliasing issues when rotated. The body is a thin line/stick, which also rotates cleanly because there's not much pixel detail to distort. Draw the shell once (it's a circle — it always looks the same). Draw the body in 8 directions (up, up-right, right, down-right, down, down-left, left, up-left) and snap to the nearest frame based on rotation angle.",
-        beginner: "Test this early! Draw a simple circle and a stick in Aseprite. Import into Godot, rotate the node, and see how it looks. If it's clean enough, you might not need pre-rendered frames at all — Godot's rotation on simple circular shapes often looks fine. If it's ugly, go with the 8-direction frame approach.",
+        desc: "The whole snail rotates during movement, so each piece needs to look good at any angle. The good news: the undershell body and shell are both circles — circles look identical at every rotation angle, so they need only 1 frame each. The challenge is the neck and head. Two approaches: (A) PRE-RENDERED: Draw head in 8 directions (up, up-right, right, etc.) and snap to nearest direction based on rotation. Neck can be a Line2D drawn in code or a short tileable segment. (B) RUNTIME ROTATION: Let Godot rotate the Node2D and accept minor aliasing. Since the head is small (10-14px) and the neck is thin (2-4px), aliasing is usually minimal.",
+        tips: "Recommended approach: Use Godot's runtime rotation for the whole SnailRoot node. Draw the undershell body as a circle (looks fine at any angle). Draw the shell as a circle with some asymmetric detail like a spiral (if the spiral looks bad rotated, use the pre-rendered 8-direction trick just for the shell). Draw 8 directional frames for the head so the face always reads correctly. Use a Line2D or simple stretched sprite for the neck.",
+        beginner: "Test this ASAP with programmer art! In Godot: create a Node2D, add 4 child Sprite2Ds (colored circles for undershell + shell, a small square for head, a thin rect for neck). Rotate the parent. Does it look okay? If yes, you might not need pre-rendered frames at all. If the head looks weird, draw 8 directional head frames in Aseprite and swap them based on angle.",
         resources: [
           "Pre-rendered rotation tutorial — search 'pixel art rotation frames Aseprite' on YouTube",
           "Saint11 pixel art tips — <a href='https://saint11.org/blog/pixel-art-tutorials/'>saint11.org</a>"
@@ -59,8 +59,8 @@ const DATA_PART2A = [
         id: "state-visuals",
         name: "Create visuals for each snail state",
         effort: "M",
-        desc: "Your snail has distinct visual states: (1) MOVING — shell circle with body-stick extending out, whole thing rotating. (2) DASHING — just the shell circle, body hidden inside, maybe motion lines or a trail effect. (3) SHELL-LESS — just the body/slug, no shell, looks vulnerable and squishy. (4) PARRYING — brief flash pose. (5) HIT — squash/flash. (6) KO — shell crack + splat.",
-        tips: "The dash state (shell only) is the simplest to draw — it's literally just your shell sprite rolling fast. Add a speed trail or blur lines behind it for readability. The shell-less state (after shell toss) should look clearly vulnerable — the naked slug body wobbling around.",
+        desc: "Each state shows/hides different pieces: (1) MOVING — all 4 parts visible, rotating together. Head/neck push off ground. (2) DASHING — shell + undershell only, neck + head retracted (hidden). Add speed lines or trail particles. (3) SHELL-LESS (after toss) — undershell + neck + head visible, no shell. Should look exposed and vulnerable — maybe the undershell wobbles. (4) PARRYING — all parts flash white briefly. (5) HIT — squash the undershell, flash red. (6) KO — shell cracks, head goes dizzy-eyed, parts scatter.",
+        tips: "The dash state is just two circles stacked (shell on undershell), which is super simple to draw. The shell-less state is where character personality shines — the exposed slug with a worried face. Make sure each state reads instantly at a glance — players need to know if an opponent has their shell or not.",
         resources: [
           "Godot AnimationPlayer for state transitions — <a href='https://docs.godotengine.org/en/stable/classes/class_animationplayer.html'>docs.godotengine.org</a>"
         ]
@@ -69,7 +69,7 @@ const DATA_PART2A = [
         id: "char-anims",
         name: "Create per-character animation sets",
         effort: "L",
-        desc: "Each snail needs: body sprite (8 directional frames for rotation, or a single sprite if Godot rotation looks clean), shell sprite (1 frame if symmetrical), dash trail effect, shell-less slug body (2-3 frames wobbling), shell toss launch (2 frames), parry flash (1-2 frames), hit reaction (2 frames), KO animation (3-4 frames). Since the shell is just a circle and the body is a stick, total unique art per character is actually quite low — ~15-20 frames.",
+        desc: "Per character art list: UNDERSHELL BODY — 1 circle sprite (same at all angles), maybe 2-3 for squash/stretch on hit. SHELL — 1 sprite if symmetrical, or 8 directional frames if it has asymmetric detail like a spiral. NECK — 1 thin segment (stretched in code or tiled). HEAD — 8 directional frames so the face reads correctly at any rotation + 1 hurt face + 1 KO dizzy face + 1 worried face (shell-less). EFFECTS — dash trail, parry flash, KO crack. Total per character: ~15-25 unique sprites, which is very manageable.",
         tips: "Build the full animation set for ONE character first. Learn the pipeline. Character 2 onward will go 3x faster because you know what you're doing.",
         beginner: "Use Aseprite's animation timeline. Tag each animation (idle, roll, dash, etc.). Export as a spritesheet and import into Godot's AnimatedSprite2D or AnimationPlayer.",
         resources: [
@@ -137,8 +137,8 @@ const DATA_PART2A = [
         id: "arena-designs",
         name: "Design 6-8 unique arena concepts",
         effort: "L",
-        desc: "Since borders wrap, arenas are about interior obstacles and floor surfaces. Ideas: Garden Bed (flat, starter), Compost Heap (bouncy surfaces), Rain Gutter (slippery), Mushroom Forest (vertical platforms), Kitchen Counter (hazards + obstacles), Trash Can (tight with walls), Greenhouse (vines block movement), Fish Tank (floaty gravity).",
-        tips: "Each arena should change how rolling, dashing, and shell tossing work. Platforms create vertical play. Obstacles make shell tosses ricochet. Slippery floors change rolling momentum. Screen wrapping means every arena is technically infinite — use that.",
+        desc: "At 480x270, your arena is the entire viewport. Since borders wrap, arenas are about interior obstacles and floor surfaces — platforms, walls, hazards within the screen. Ideas: Garden Bed (flat, starter), Compost Heap (bouncy surfaces), Rain Gutter (slippery), Mushroom Forest (vertical platforms), Kitchen Counter (hazards), Trash Can (tight with interior walls), Greenhouse (vines block movement), Fish Tank (floaty gravity).",
+        tips: "Each arena should change how rolling, dashing, and shell tossing work. Platforms create vertical play. Interior walls make shell tosses ricochet instead of wrapping. Slippery floors change rolling momentum. With 24px snails on a 480x270 screen, you have room for meaningful arena geometry without feeling cramped.",
         resources: []
       },
       {

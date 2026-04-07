@@ -9,8 +9,8 @@ const DATA_PART1 = [
         id: "core-loop",
         name: "Define the core gameplay loop",
         effort: "M",
-        desc: "Your game: snails roll around, extend their body/neck from their shell in a straight line to dash, and toss their shells. Damage comes from dashes and shell tosses only. All snails can parry. 5-hit HP system, no ring-outs — screen borders wrap to the other side. Map out exactly how a round flows: spawn, roll, fight, KO, round end.",
-        tips: "Write out the full input list on paper: roll (directional), dash (extend body), shell toss, parry. That's your whole moveset. Constraints breed creativity — this tight moveset is a strength, not a limitation.",
+        desc: "Your game: snails move by extending their head/neck out and pushing off surfaces (the whole snail rotates like a wheel). To dash, they retract fully into their shell and launch as a rolling ball. They can also toss their shell as a projectile (leaving themselves vulnerable). Damage comes only from dashes and shell tosses. All snails can parry. 5-hit HP, no ring-outs — screen borders wrap to the other side.",
+        tips: "Write out the full input list on paper: roll/move (extend body, push off ground), dash (retract into shell, launch), shell toss (throw shell), parry (deflect). That's your whole moveset. Constraints breed creativity — this tight moveset is a strength.",
         beginner: "Draw a one-page flowchart of a single match. Keep it simple. If you can explain a round in 3 sentences, you've nailed it.",
         resources: [
           "GDD template — <a href='https://www.gamedesigning.org/learn/game-design-document/'>gamedesigning.org</a>",
@@ -21,7 +21,7 @@ const DATA_PART1 = [
         id: "gdd",
         name: "Write your Game Design Document (GDD)",
         effort: "L",
-        desc: "A living doc covering: movement (rolling + body extension), combat (dash attacks + shell toss + parry), the 5-HP system, screen wrapping, character roster with unique dashes/shell tosses, arenas, art style, and scope. Keep it to 5-10 pages.",
+        desc: "A living doc covering: movement (body-push rotation), combat (retract-dash + shell toss + parry), the 5-HP system, screen wrapping, 4-piece character model (undershell body, shell, neck, head), character roster with unique dashes/shell tosses, arenas, art style, and scope. Keep it to 5-10 pages.",
         tips: "Your GDD will change constantly — that's normal. It's a compass, not a contract. Google Doc or Notion both work great.",
         beginner: "Don't over-document. Write enough to remember your ideas and communicate them. You can always add detail later.",
         resources: [
@@ -53,8 +53,8 @@ const DATA_PART1 = [
         id: "usp",
         name: "Define your unique selling points",
         effort: "S",
-        desc: "Your USPs: (1) Snails rolling around — inherently goofy and charming (2) Body extension dashes — unique movement/attack hybrid (3) Shell toss as a projectile (4) Screen wrapping — no death pits, strategic warping (5) Parry system for skillful play. That's a great pitch.",
-        tips: "Elevator pitch: 'A physics party brawler where snails roll, dash out of their shells, and toss shells at each other — with screen wrapping so there's nowhere to hide.' That sells itself.",
+        desc: "Your USPs: (1) Unique movement — snails push off surfaces by extending their head, rotating like a wheel (2) Retract-dash — snail hides in shell and rockets forward as a ball (3) Shell toss — throw your shell as a projectile, leaving yourself exposed (4) Screen wrapping — no death pits, strategic warping (5) Universal parry for skill expression. That's a great pitch.",
+        tips: "Elevator pitch: 'A goofy physics brawler where snails roll around by spinning their bodies, retract into their shells to dash-attack, and can throw their shells as projectiles — with screen wrapping so there's nowhere to hide.' That sells itself.",
         resources: []
       },
       {
@@ -153,9 +153,9 @@ const DATA_PART1 = [
         id: "rolling",
         name: "Implement snail rolling / body-push movement",
         effort: "L",
-        desc: "The snail moves by extending its body out of the shell and pushing off the ground — the whole thing (shell + body) rotates together like a circle with a line sticking out. Think of a clock hand spinning around, where the shell is the center and the body is the hand pushing off surfaces. This IS the movement — there's no separate walk/run.",
-        tips: "Visually, the player is a circle (shell) with a line (body) rotating around it. Use RigidBody2D for physics-driven rotation — apply torque to spin, and when the body contacts the ground, apply a push force. The rotation speed = movement speed. This will feel unique and goofy, which is exactly the vibe.",
-        beginner: "Start with a circle and a line in programmer art. Get the rotation + push-off feeling fun before any pixel art. Test: does spinning around feel satisfying? Does pushing off surfaces feel responsive? Nail this first — it's the foundation of the whole game.",
+        desc: "The snail is 4 parts (undershell body, shell, neck, head) that all rotate together as one unit. The head/neck extend out and push off the ground to move — the whole snail spins like a wheel. Think of it as: the undershell + shell are the hub, and the neck + head are a spoke that pushes off surfaces. This IS the movement — there's no separate walk/run.",
+        tips: "In Godot, create a root Node2D that rotates (apply_torque or set rotation directly). Child nodes: UndershellBody (Sprite2D circle), Shell (Sprite2D on top), Neck (Line2D or stretched Sprite2D extending outward), Head (Sprite2D at neck tip). When head contacts ground, apply a push force. Rotation speed = movement speed.",
+        beginner: "Start with colored shapes in programmer art: a big circle (undershell+shell), a thin rectangle (neck), a small circle (head). Get the rotation + push-off feeling fun before any pixel art. Does spinning feel satisfying? Does pushing off surfaces feel responsive? Nail this first.",
         resources: [
           "RigidBody2D — <a href='https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html'>docs.godotengine.org</a>",
           "CharacterBody2D — <a href='https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html'>docs.godotengine.org</a>"
@@ -174,9 +174,9 @@ const DATA_PART1 = [
         id: "dash",
         name: "Implement dash (full retract into shell)",
         effort: "L",
-        desc: "When dashing, the snail fully retracts into its shell and launches as a pure rolling ball. No body visible — just the shell rocketing forward. This is an attack: hitting someone while dashing deals damage. Each character has a unique dash (different speed, trajectory, distance, etc.).",
-        tips: "The dash is a state change: hide the body sprite, apply a burst of velocity to the shell in the aimed direction. The shell becomes a hitbox during the dash. Add a brief wind-up (shell wobbles) for readability so opponents can react. Recovery = body re-emerges from shell.",
-        beginner: "Start simple: press dash button → body disappears → circle flies forward → body reappears. Get the state transitions right first, then tune speed/distance.",
+        desc: "When dashing, the neck + head retract into the shell — only the undershell body + shell remain, forming a compact rolling ball that launches in the aimed direction. This is your attack: hitting someone while dashing deals 1 HP damage. Each character has a unique dash (different speed, trajectory, distance, etc.).",
+        tips: "The dash is a state change: hide the Neck and Head sprites, apply a burst of velocity. The shell becomes a hitbox during dash. Add a brief wind-up (shell wobbles, neck starts retracting) for readability so opponents can react. Recovery = neck + head re-emerge from shell.",
+        beginner: "Start simple: press dash → hide neck + head → launch the ball → after distance/time, re-show neck + head. Get the state transitions right first, then tune speed/distance.",
         resources: [
           "Godot Tween — <a href='https://docs.godotengine.org/en/stable/classes/class_tween.html'>docs.godotengine.org</a>"
         ]
@@ -185,8 +185,8 @@ const DATA_PART1 = [
         id: "shell-toss",
         name: "Implement shell toss attack",
         effort: "L",
-        desc: "The snail detaches and throws its shell as a projectile. While shell-less, the snail body is vulnerable. The shell travels in a straight line (with screen wrapping!). Each character has a unique shell toss. The shell should return after a time or be retrievable.",
-        tips: "When the shell is tossed, spawn it as a separate projectile scene. The naked snail body becomes a different state (vulnerable, maybe slower). Deciding when to toss your shell vs keep it for defense is a core strategic decision.",
+        desc: "The shell detaches and flies off as a projectile. The snail keeps its undershell body + neck + head but loses the shell — clearly vulnerable and a different visual silhouette. The tossed shell travels with screen wrapping. Each character has a unique shell toss trajectory/behavior. The shell should return after a time or be retrievable.",
+        tips: "In Godot: reparent the Shell sprite to a new projectile Node2D, apply velocity. The remaining snail (undershell + neck + head) enters a 'shell-less' state — maybe slower, can't dash (no shell to retract into), can still parry. This risk/reward is a core strategic decision.",
         resources: []
       },
       {
@@ -264,7 +264,7 @@ const DATA_PART1 = [
         name: "Create character concepts & personalities",
         effort: "M",
         desc: "Give each snail a name, look, and personality that matches their playstyle. A fast snail could be a caffeine-addicted racer. A heavy snail could be a grumpy boulder-shelled bruiser. Keep it goofy and fun — this game is funny.",
-        tips: "Personality should come through in animations and visual design, not text. A snail with an angry face and cracked shell tells you everything.",
+        tips: "With the 4-piece model, personality comes from: head design (angry eyes, goofy smile, cool shades), shell pattern/color, undershell color, and neck thickness. A snail with an angry face and cracked spiked shell tells you everything at a glance.",
         resources: []
       },
       {
