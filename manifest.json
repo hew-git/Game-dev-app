@@ -1,0 +1,24 @@
+{
+  "name": "Shell Shock Dev Tracker",
+  "short_name": "SnailTracker",
+  "description": "Game dev tracker for a snail physics brawler targeting Steam",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1410",
+  "theme_color": "#2d5a27",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%230f1410'/%3E%3Cellipse cx='105' cy='125' rx='50' ry='32' fill='%232d5a27'/%3E%3Cellipse cx='105' cy='121' rx='42' ry='26' fill='%23c2885c'/%3E%3Cpath d='M105 95Q128 101 132 121Q128 141 105 147Q82 141 78 121Q82 101 105 95Z' fill='%23a06830'/%3E%3Ccircle cx='105' cy='121' r='10' fill='%23553018'/%3E%3Cellipse cx='72' cy='125' rx='30' ry='15' fill='%234a8c3f'/%3E%3Ccircle cx='60' cy='118' r='5' fill='white'/%3E%3Ccircle cx='60' cy='118' r='2.5' fill='%230f1410'/%3E%3Cline x1='57' y1='107' x2='53' y2='95' stroke='%234a8c3f' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='64' y1='106' x2='68' y2='94' stroke='%234a8c3f' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='53' cy='93' r='2.5' fill='%234a8c3f'/%3E%3Ccircle cx='68' cy='92' r='2.5' fill='%234a8c3f'/%3E%3Ctext x='96' y='165' text-anchor='middle' font-size='18' font-weight='bold' fill='%234a8c3f' font-family='sans-serif'%3E%F0%9F%8E%AE DEV%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='64' fill='%230f1410'/%3E%3Cellipse cx='280' cy='320' rx='135' ry='85' fill='%232d5a27'/%3E%3Cellipse cx='280' cy='312' rx='115' ry='70' fill='%23c2885c'/%3E%3Cpath d='M280 242Q335 255 345 312Q335 369 280 382Q225 369 215 312Q225 255 280 242Z' fill='%23a06830'/%3E%3Ccircle cx='280' cy='312' r='28' fill='%23553018'/%3E%3Cellipse cx='195' cy='322' rx='78' ry='38' fill='%234a8c3f'/%3E%3Ccircle cx='160' cy='305' r='13' fill='white'/%3E%3Ccircle cx='160' cy='305' r='6.5' fill='%230f1410'/%3E%3Cline x1='154' y1='276' x2='144' y2='248' stroke='%234a8c3f' stroke-width='6' stroke-linecap='round'/%3E%3Cline x1='168' y1='274' x2='176' y2='246' stroke='%234a8c3f' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='144' cy='245' r='6' fill='%234a8c3f'/%3E%3Ccircle cx='176' cy='243' r='6' fill='%234a8c3f'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

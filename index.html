@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#2d5a27">
+  <title>Snail Fighter Dev Tracker</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1><span class="snail-icon">🐌</span> Snail Fighter Dev Tracker</h1>
+        <div class="header-subtitle">Physics Brawler &bull; Pixel Art &bull; Godot &bull; Steam</div>
+      </div>
+      <button class="reset-btn">Reset All</button>
+    </div>
+    <div class="overall-progress">
+      <div class="overall-label">
+        <span id="overall-count">0 / 0 tasks complete</span>
+        <span class="overall-pct" id="overall-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="overall-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="categories"></div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3>Reset All Progress?</h3>
+      <p>This will uncheck every task. This action cannot be undone.</p>
+      <div class="modal-btns">
+        <button class="btn-cancel">Cancel</button>
+        <button class="btn-danger">Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./data1.js"></script>
+  <script src="./data2.js"></script>
+  <script src="./data3.js"></script>
+  <script src="./data4.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>
