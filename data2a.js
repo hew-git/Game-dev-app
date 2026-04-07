@@ -20,6 +20,18 @@ const DATA_PART2A = [
         ]
       },
       {
+        id: "resolution-guide",
+        name: "Understand sprite size vs screen resolution",
+        effort: "S",
+        desc: "Your game has two separate concepts: GAME RESOLUTION (the viewport size in Godot) and SPRITE SIZE (how big your characters are in pixels). Game resolution is the canvas — common pixel art choices are 320x180, 384x216, 480x270, or 640x360. Sprite size is how many pixels your snail takes up on that canvas. These two numbers together determine how much of the screen your character fills and how many characters fit on screen at once.",
+        tips: "Example math: If your game resolution is 480x270 and your snail shell is 24x24 pixels, the shell is 1/20th of the screen width — a good size for a 2-player brawler. At 640x360 with a 32x32 shell, similar ratio. The key question: how many snails should fit across the screen? For a brawler, you want 8-12 character-widths across the screen so there's room to move. Work backward from that.",
+        beginner: "Start with 480x270 game resolution and 24-32px character sprites. This is a proven combo — your snails will be readable, arenas will have room, and the pixel art won't take forever to draw. You can always change these later, but it's painful, so test early. Set this in Godot: Project Settings > Display > Window > Viewport Width/Height.",
+        resources: [
+          "Common pixel art resolutions breakdown — search 'pixel art game resolution guide' on YouTube",
+          "Godot viewport settings — <a href='https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html'>docs.godotengine.org</a>"
+        ]
+      },
+      {
         id: "modular-sprites",
         name: "Build modular snail sprites (body + shell separate)",
         effort: "L",
